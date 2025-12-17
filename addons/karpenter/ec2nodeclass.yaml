@@ -1,0 +1,27 @@
+# ec2nodeclass.yaml
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: default
+spec:
+  # The IAM role that the nodes will use (Instance Profile)
+  # This role was created in the Terraform module.
+  role: "karpenter-node-eks-dev"
+  
+  # AMI selector - use latest AL2023
+  amiSelectorTerms:
+    - alias: al2023@latest
+  
+  # Tags to discover subnets and security groups
+  # These tags must match those defined in your VPC and Terraform.
+  subnetSelectorTerms:
+    - tags:
+        "karpenter.sh/discovery": "eks-dev"
+  securityGroupSelectorTerms:
+    - tags:
+        "karpenter.sh/discovery": "eks-dev"
+  
+  # Tags to apply on EC2 instances created by Karpenter
+  tags:
+    "karpenter.sh/managed-by": "eks-dev"
+    "karpenter.sh/discovery": "eks-dev"

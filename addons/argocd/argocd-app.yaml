@@ -1,0 +1,31 @@
+# ArgoCD Addon for EKS Bootstrap
+# This manifest deploys ArgoCD in the cluster using the official Helm chart.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: 5.51.6  # Use latest stable or pin as needed
+    helm:
+      values: |
+        server:
+          service:
+            type: LoadBalancer
+        configs:
+          params:
+            server.insecure: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

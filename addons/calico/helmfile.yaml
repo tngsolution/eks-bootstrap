@@ -1,0 +1,28 @@
+environments:
+  dev:
+    values:
+      - cluster_name: eks-dev
+        region: eu-west-3
+        environment: dev
+
+repositories:
+  - name: projectcalico
+    url: https://docs.tigera.io/calico/charts
+
+releases:
+  - name: calico
+    namespace: tigera-operator
+    createNamespace: true
+    chart: projectcalico/tigera-operator
+    version: v3.27.0
+    values:
+      - values.yaml
+    set:
+      - name: clusterName
+        value: {{ .Values.cluster_name }}
+      - name: region
+        value: {{ .Values.region }}
+    labels:
+      cluster: {{ .Values.cluster_name }}
+      region: {{ .Values.region }}
+      environment: {{ .Values.environment }}

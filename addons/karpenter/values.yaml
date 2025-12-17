@@ -1,0 +1,9 @@
+# values.yaml for Karpenter Helm chart
+# Documentation: https://karpenter.sh/docs/getting-started/getting-started-with-karpenter/
+
+# Most values are set via helmfile 'set' blocks
+# This file can be used for additional customizations
+
+# Webhook for the admission controller
+webhook:
+  port: 8443

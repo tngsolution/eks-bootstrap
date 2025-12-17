@@ -1,0 +1,55 @@
+environments:
+  dev:
+    values:
+      - cluster_name: eks-dev
+        aws_account_id: {{ requiredEnv "AWS_ACCOUNT_ID" }}
+
+releases:
+  - name: karpenter
+    namespace: karpenter
+    createNamespace: true
+    chart: oci://public.ecr.aws/karpenter/karpenter
+    version: 1.0.12
+    set:
+      - name: settings.clusterName
+        value: {{ .Values.cluster_name }}
+      - name: settings.interruptionQueue
+        value: {{ .Values.cluster_name }}
+      - name: serviceAccount.annotations.eks\.amazonaws\.com/role-arn
+        value: arn:aws:iam::{{ .Values.aws_account_id }}:role/eks-dev-karpenter-controller
+      - name: replicas
+        value: "1"
+      - name: controller.resources.requests.cpu
+        value: "500m"
+      - name: controller.resources.requests.memory
+        value: "512Mi"
+      - name: controller.resources.limits.cpu
+        value: "2"
+      - name: controller.resources.limits.memory
+        value: "2Gi"
+      - name: controller.healthProbe.port
+        value: "8081"
+      - name: controller.livenessProbe.initialDelaySeconds
+        value: "60"
+      - name: controller.livenessProbe.timeoutSeconds
+        value: "30"
+      - name: controller.readinessProbe.initialDelaySeconds
+        value: "60"
+      - name: controller.readinessProbe.timeoutSeconds
+        value: "30"
+    wait: true
+    hooks:
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args:
+          - "apply"
+          - "-f"
+          - "ec2nodeclass.yaml"
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args:
+          - "apply"
+          - "-f"
+          - "nodepool.yaml"

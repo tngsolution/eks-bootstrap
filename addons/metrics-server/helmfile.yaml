@@ -1,0 +1,17 @@
+environments:
+  dev:
+    values:
+      - cluster_name: eks-dev
+
+releases:
+  - name: metrics-server
+    namespace: kube-system
+    chart: oci://registry-1.docker.io/bitnamicharts/metrics-server
+    version: 7.2.17
+    values:
+      - apiService:
+          create: true
+        extraArgs:
+          - --kubelet-insecure-tls=true
+          - --kubelet-preferred-address-types=InternalIP
+    wait: true

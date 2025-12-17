@@ -1,0 +1,41 @@
+# Calico (Tigera Operator) configuration values
+# Variables are set via helmfile environments
+
+installation:
+  enabled: true
+  kubernetesProvider: EKS
+  
+# Calico networking configuration
+calicoNetwork:
+  bgp: Disabled
+  ipPools:
+    - blockSize: 26
+      cidr: 192.168.0.0/16
+      encapsulation: VXLAN
+      natOutgoing: Enabled
+      nodeSelector: all()
+
+# Resource requirements
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Enable Calico API server for enhanced policy management
+apiServer:
+  enabled: true
+
+# Image pull policy
+imagePullPolicy: IfNotPresent
+
+# Node tolerations (for control plane nodes if needed)
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule
