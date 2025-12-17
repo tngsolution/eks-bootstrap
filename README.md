@@ -13,11 +13,13 @@ This repository contains all post-install configuration for an EKS cluster:
 
 This repository provides several addons for EKS, located in the `addons/` directory:
 
-- **ArgoCD** (`addons/argocd/argocd-app.yaml`):
-	- GitOps controller for Kubernetes. Deploys ArgoCD using the official Helm chart.
+
+- **ArgoCD** (`addons/argocd/helmfile.yaml`):
+	- GitOps controller for Kubernetes. Deploys ArgoCD using the official Helm chart via Helmfile.
 	- Install:
 		```sh
-		kubectl apply -f addons/argocd/argocd-app.yaml
+		cd addons/argocd
+		helmfile sync
 		```
 
 - **Calico** (`addons/calico/`):
