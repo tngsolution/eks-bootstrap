@@ -3,13 +3,14 @@ environments:
     values:
       - cluster_name: eks-dev
         aws_account_id: {{ requiredEnv "AWS_ACCOUNT_ID" }}
+        karpenter_version: 1.0.12
 
 releases:
   - name: karpenter
     namespace: karpenter
     createNamespace: true
     chart: oci://public.ecr.aws/karpenter/karpenter
-    version: 1.0.12
+    version: {{ .Values.karpenter_version }}
     set:
       - name: settings.clusterName
         value: {{ .Values.cluster_name }}

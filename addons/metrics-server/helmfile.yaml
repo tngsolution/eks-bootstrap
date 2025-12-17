@@ -2,12 +2,13 @@ environments:
   dev:
     values:
       - cluster_name: eks-dev
+        metrics_server_version: 7.2.17
 
 releases:
   - name: metrics-server
     namespace: kube-system
     chart: oci://registry-1.docker.io/bitnamicharts/metrics-server
-    version: 7.2.17
+    version: {{ .Values.metrics_server_version }}
     values:
       - apiService:
           create: true

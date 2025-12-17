@@ -1,3 +1,8 @@
+# environments allow version pinning via env or CLI
+environments:
+  default:
+    values:
+      - version: 5.51.6
 # Helmfile for ArgoCD deployment
 
 repositories:
@@ -9,7 +14,7 @@ releases:
     namespace: argocd
     createNamespace: true
     chart: argo/argo-cd
-    version: 5.51.6  # Use latest stable or pin as needed
+    version: {{ .Values.version }}
     values:
       - server:
           service:
